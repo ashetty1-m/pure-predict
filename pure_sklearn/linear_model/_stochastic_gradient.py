@@ -21,7 +21,7 @@ class SGDClassifierPure(LinearClassifierMixinPure):
         check_types(self)
 
     def _check_proba(self):
-        if self.loss not in ("log"):
+        if self.loss not in ["log", "modified_huber"]:
             raise AttributeError(
                 "probability estimates are not available for loss=%r" % self.loss
             )
@@ -40,12 +40,43 @@ class SGDClassifierPure(LinearClassifierMixinPure):
     def _predict_proba(self, X):
         if self.loss == "log":
             return self._predict_proba_lr(X)
+        elif self.loss == "modified_huber":
+            import numpy as np
+            binary = len(self.classes_) == 2
+            scores = self.decision_function(X)
+            scores = np.array(scores)
+
+            if binary:
+                prob2 = np.ones((scores.shape[0], 2))
+                prob = prob2[:, 1]
+            else:
+                prob = scores
+
+            np.clip(scores, -1, 1, prob)
+            prob += 1.0
+            prob /= 2.0
+
+            if binary:
+                prob2[:, 0] -= prob
+                prob = prob2
+            else:
+                # the above might assign zero to all classes, which doesn't
+                # normalize neatly; work around this to produce uniform
+                # probabilities
+                prob_sum = prob.sum(axis=1)
+                all_zero = prob_sum == 0
+                if np.any(all_zero):
+                    prob[all_zero, :] = 1
+                    prob_sum[all_zero] = len(self.classes_)
+
+                # normalize
+                prob /= prob_sum.reshape((prob.shape[0], -1))
+
+            return [a for a in prob]
         else:
-            raise NotImplementedError(
-                "predict_(log_)proba only supported when"
-                " loss='log' "
-                "(%r given)" % self.loss
-            )
+            raise NotImplementedError("predict_(log_)proba only supported when"
+                                      " loss='log' or 'modified_huber' "
+                                      "(%r given)" % self.loss)
 
     @property
     def predict_log_proba(self):

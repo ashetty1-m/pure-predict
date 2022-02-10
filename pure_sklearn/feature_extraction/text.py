@@ -22,6 +22,7 @@ from ..utils import (
 from ..map import convert_estimator
 from ..preprocessing import normalize_pure
 from ._hash import _FeatureHasherPure
+from ..base import safe_log
 
 __all__ = [
     "CountVectorizerPure",
@@ -424,7 +425,8 @@ class TfidfTransformerPure:
 
         if self.sublinear_tf:
             for index in range(len(X)):
-                X[index] = safe_log(X[index]) + 1
+                for k,v in X[index].items():
+                    X[index][k] = safe_log(v) + 1
 
         if self.use_idf:
             if n_features != self.expected_n_features_:
