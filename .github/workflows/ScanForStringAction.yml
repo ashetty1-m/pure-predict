@@ -1,3 +1,4 @@
+name: Scan for Regex String
 on: [workflow_dispatch]
 
 jobs:
