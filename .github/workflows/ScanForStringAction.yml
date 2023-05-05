@@ -1,5 +1,6 @@
 name: Scan for Regex String
-on: [workflow_dispatch]
+
+on: [workflow_dispatch]:
   inputs:
     codefolders:
       description: 'Source code folders to scan, separated by ":"'
