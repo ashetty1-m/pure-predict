@@ -25,9 +25,6 @@ on:
         type: number
         required: true
         default: 0
-    outputs:
-      filelist:
-        description: 'The list of files that meet criteria'
 
 jobs:
   scanforstring:
