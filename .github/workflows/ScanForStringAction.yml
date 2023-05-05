@@ -29,13 +29,13 @@ on:
 jobs:
   scanforstring:
     runs-on: ubuntu-latest
-    name: Scan for datetime String
+    name: Scan for Regex String
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Scan Step
-        uses: ericwuehler/ScanForStringAction@master
-        id: datetimescan
+        uses: ashetty1-m/ScanForStringAction@master
+        id: regexscan
         with:
           codefolders: ${{ inputs.codefolders }}
           fileextensions: ${{ inputs.fileextensions }}
