@@ -43,4 +43,4 @@ jobs:
           match: ${{ inputs.match }}
           lines: ${{ inputs.lines }}
       - name: Get the output
-        run: 'echo "${{ steps.datetimescan.outputs.filelist }}"'
+        run: 'echo "${{ steps.regexscan.outputs.filelist }}"'
