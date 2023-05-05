@@ -37,10 +37,10 @@ jobs:
         uses: ericwuehler/ScanForStringAction@master
         id: datetimescan
         with:
-          codefolders: ./
-          fileextensions: '.md,.sh,.py'
-          regex: .*datetime.*
-          match: 0
-          lines: 0
+          codefolders: inputs.codefolders
+          fileextensions: inputs.fileextensions
+          regex: inputs.regex
+          match: inputs.match
+          lines: inputs.lines
       - name: Get the output
         run: 'echo "${{ steps.datetimescan.outputs.filelist }}"'
